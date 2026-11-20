@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#A3161C">
+<title>Rifa AMPA El Girasol</title>
+<link rel="icon" href="logo.webp">
+<link rel="apple-touch-icon" href="logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#E8B33A; --sun-soft:#FFF4D6; --leaf:#1F6B3A; --leaf-soft:#E1F0E6;
+  --red:#A3161C; --red-dk:#7A0E12; --gold:#E9C46A;
+  --ink:#2A1A14; --muted:#7A665A; --paper:#FFF9EE; --line:#EAD9BC;
+  --sold:#1F6B3A; --pending:#D9661A;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--paper);
+  background-image:radial-gradient(circle at 10% 0%,#FBE7B5 0,transparent 40%),radial-gradient(circle at 100% 30%,#F6DCD6 0,transparent 35%)}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;gap:16px;margin-bottom:18px;padding:14px 18px;border-radius:20px;color:#fff;
+  background:radial-gradient(circle at 85% 20%,rgba(255,215,120,.35) 0,transparent 30%),linear-gradient(135deg,var(--red),var(--red-dk));
+  box-shadow:0 6px 20px rgba(122,14,18,.25)}
+header h1{font-family:Fredoka,sans-serif;font-size:clamp(22px,4vw,34px);margin:0;line-height:1.1;color:var(--gold);letter-spacing:.01em}
+header p{margin:4px 0 0;color:#FCE9C8;font-weight:700}
+header p b{color:#FFD54A;font-size:1.15em}
+.logo{width:clamp(64px,10vw,86px);height:auto;aspect-ratio:1;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.3))}
+.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.tab{font-family:Fredoka,sans-serif;font-size:17px;border:2px solid var(--line);background:#fff;color:var(--ink);
+  padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:600}
+.tab[aria-selected=true]{background:var(--red);border-color:var(--red);color:#fff}
+.save-state{margin-left:auto;align-self:center;font-size:13px;color:var(--muted);font-weight:600}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.layout>.basket{order:2}}
+@media(max-width:520px){.grid{gap:4px}.cell{border-radius:8px;border-width:1.5px}.wrap{padding:12px 10px 50px}.card{padding:12px}.tab{font-size:15px;padding:8px 14px}}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 2px 0 rgba(0,0,0,.03)}
+.basket h2{font-family:Fredoka,sans-serif;margin:0 0 10px;font-size:22px;color:var(--red)}
+.photo{width:100%;min-height:200px;border-radius:14px;background:var(--sun-soft);border:2px dashed #E9CF73;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;position:relative}
+.photo img{width:100%;height:auto;display:block}
+.photo .ph{text-align:center;color:var(--muted);font-weight:700;padding:10px}
+.photo .ph svg{width:64px;height:64px;display:block;margin:0 auto 6px}
+.photo .chg{position:absolute;right:8px;bottom:8px;background:rgba(255,255,255,.92);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+.contents{white-space:pre-wrap;margin:12px 0 0;color:var(--ink);line-height:1.5;font-size:14px;max-height:260px;overflow:auto;background:var(--paper);border-radius:10px;padding:10px 12px}
+.contents.empty{color:var(--muted);font-style:italic}
+.linkbtn{background:none;border:none;color:var(--leaf);font-weight:700;cursor:pointer;padding:0;font:inherit;font-weight:700;margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.stat b{display:block;font-family:Fredoka,sans-serif;font-size:22px}
+.stat span{font-size:12px;color:var(--muted);font-weight:700}
+.bar{height:8px;background:var(--line);border-radius:99px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--leaf)}
+.price{margin-top:10px;font-size:14px;color:var(--muted);font-weight:700}
+.grid-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.grid-head h3{font-family:Fredoka,sans-serif;margin:0;font-size:20px}
+.legend{display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:700;margin-left:auto}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.cell{aspect-ratio:1;border:2px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;padding:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;font-family:inherit;color:var(--ink);transition:transform .08s}
+.cell:hover{transform:scale(1.06);border-color:var(--sun)}
+.cell .n{font-family:Fredoka,sans-serif;font-weight:700;font-size:clamp(13px,2.2vw,20px);line-height:1}
+.cell .who{font-size:clamp(8px,1vw,11px);font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.cell.sold{background:var(--sold);border-color:var(--sold);color:#fff}
+.cell.unpaid{background:var(--pending);border-color:var(--pending);color:#fff}
+.cell.hit{outline:3px solid var(--sun);outline-offset:1px}
+.cell.dim{opacity:.35}
+.tools{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+input[type=search],input[type=text],textarea{font:inherit;border:2px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:none;border-color:var(--sun)}
+.btn{font:inherit;font-weight:700;border-radius:10px;padding:9px 14px;border:2px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.btn.pri{background:var(--red);border-color:var(--red);color:#fff}
+.btn.warn{color:#B3261E;border-color:#F0C9C6}
+.list{margin-top:16px}
+.list table{width:100%;border-collapse:collapse;font-size:14px}
+.list th,.list td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+.list th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.list td.num{font-family:Fredoka,sans-serif;font-weight:700;width:48px}
+.list tr{cursor:pointer}
+.list tr:hover td{background:var(--sun-soft)}
+.pill{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px}
+.pill.ok{background:var(--leaf-soft);color:var(--leaf)}
+.pill.no{background:#FDE8D6;color:var(--pending)}
+dialog{border:none;border-radius:18px;padding:0;max-width:420px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(42,36,24,.45)}
+.dlg{padding:20px}
+.dlg h3{font-family:Fredoka,sans-serif;margin:0 0 4px;font-size:24px;color:var(--red)}
+.dlg .bignum{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:12px;background:var(--sun);font-family:Fredoka,sans-serif;font-size:24px;font-weight:700;margin-right:10px}
+.dlg label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px;color:var(--muted)}
+.dlg .row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.dlg .row .sp{flex:1}
+.check{display:flex;align-items:center;gap:8px;margin-top:12px;font-weight:700}
+.check input{width:18px;height:18px;accent-color:var(--leaf)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.ro-note{background:#FDE8D6;color:#7A3E0B;border-radius:12px;padding:10px 12px;font-weight:700;font-size:14px;margin-bottom:14px}
+.save-state.err{color:#B3261E}
+.cell[disabled]{cursor:wait}
+.login{max-width:420px;margin:30px auto}
+.login h2{font-family:Fredoka,sans-serif;color:var(--red);margin:0 0 6px}
+.login p{color:var(--muted);margin:0 0 6px}
+.login label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px;color:var(--muted)}
+.login .btn{width:100%;margin-top:16px}
+.who-bar{font-size:13px;color:var(--muted);font-weight:700;margin:-8px 0 14px}
+.who-bar button{font-size:13px}
+.err-msg{color:#B3261E;font-weight:700;font-size:14px;margin-top:8px;min-height:1em}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast"></div>
+<script>
+/* ============================================================
+   CONFIGURACIÓN — solo hay que tocar esto
+   ============================================================ */
+const API_URL = 'PEGA_AQUI_LA_URL_DE_APPS_SCRIPT';   // termina en /exec
+const PRECIO  = 2;
+const RIFAS = [
+  {
+    id: 'gourmet',
+    nombre: '🎄 Cesta Gourmet',
+    titulo: 'Cesta Gourmet de Navidad',
+    foto: 'cesta-gourmet.webp'
+  },
+  {
+    id: 'chuches',
+    nombre: '🍬 Cesta Chuches',
+    titulo: 'Cesta Chuches 2026',
+    foto: 'cesta-chuches.webp'
+  }
+];
+/* ============================================================ */
+
+(function(){
+const configured = /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
+let T = {};            // T[rifaId][n] = {name,note,paid,by}
+RIFAS.forEach(r => T[r.id] = {});
+let cur = 0, query = '', loaded = false, syncing = false, lastErr = '', needPin = true;
+let me = { pin: '', by: '' };
+try { me = Object.assign(me, JSON.parse(localStorage.getItem('rifa-girasol') || '{}')); } catch(e){}
+const saveMe = () => { try { localStorage.setItem('rifa-girasol', JSON.stringify(me)); } catch(e){} };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = n => n.toLocaleString('es-ES',{maximumFractionDigits:2}) + ' €';
+const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200);}
+
+function setTickets(list){
+  RIFAS.forEach(r => T[r.id] = {});
+  (list||[]).forEach(t => { if (T[t.rifa]) T[t.rifa][t.n] = {name:t.name, note:t.note, paid:t.paid, by:t.by}; });
+}
+
+async function apiGet(){
+  const r = await fetch(API_URL + '?pin=' + encodeURIComponent(me.pin) + '&t=' + Date.now(), {cache:'no-store'});
+  return r.json();
+}
+async function apiPost(body){
+  const r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({pin: me.pin, by: me.by}, body))});
+  return r.json();
+}
+
+async function refresh(silent){
+  if (!configured || syncing || $('#dlg').open) return;
+  try {
+    const d = await apiGet();
+    if (d.ok) { setTickets(d.tickets); needPin = d.pin; loaded = true; lastErr=''; }
+    else if (d.error==='pin') { needPin = true; me.pin=''; saveMe(); loaded = true; }
+  } catch(e) { lastErr = 'Sin conexión'; }
+  if (logged() || !$('#lg')) render(true);
+}
+
+const logged = () => !needPin || !!me.pin;
+
+function render(keepFocus){
+  if (!configured) {
+    $('#app').innerHTML = header() + `<div class="card login"><h2>Falta un paso</h2><p>Abre <b>index.html</b> y pega en <code>API_URL</code> la dirección de tu Apps Script (la que termina en <code>/exec</code>). Las instrucciones están en el README.</p></div>`;
+    return;
+  }
+  if (!loaded) { $('#app').innerHTML = header() + `<div class="card login"><p>Cargando números…</p></div>`; return; }
+  if (!logged()) return renderLogin();
+
+  const r = RIFAS[cur], tk = T[r.id];
+  const sold = Object.keys(tk).length;
+  const paid = Object.values(tk).filter(t=>t.paid!==false).length;
+  const q = norm(query);
+  const matches = n => { const t=tk[n]; if(!q) return false; return String(n)===query.trim() || (t && norm(t.name).includes(q)); };
+
+  let cells='';
+  for(let n=1;n<=100;n++){
+    const t=tk[n]; const cls=['cell']; if(t) cls.push(t.paid===false?'unpaid':'sold');
+    if(q) cls.push(matches(n)?'hit':'dim');
+    cells+=`<button class="${cls.join(' ')}" data-n="${n}" title="${t?esc(t.name):'Libre'}"><span class="n">${n}</span>${t?`<span class="who">${esc(t.name)}</span>`:''}</button>`;
+  }
+  const rows = Object.entries(tk).sort((a,b)=>a[0]-b[0]).filter(([n])=>!q||matches(+n))
+    .map(([n,t])=>`<tr data-n="${n}"><td class="num">${n}</td><td>${esc(t.name)}${t.note?`<br><small style="color:var(--muted)">${esc(t.note)}</small>`:''}${t.by?`<br><small style="color:var(--muted)">Apuntó: ${esc(t.by)}</small>`:''}</td><td>${t.paid===false?'<span class="pill no">Pendiente</span>':'<span class="pill ok">Pagado</span>'}</td></tr>`).join('');
+
+  const hadFocus = keepFocus && document.activeElement && document.activeElement.id==='q';
+  const pos = hadFocus ? document.activeElement.selectionStart : 0;
+
+  $('#app').innerHTML = header() + `
+  <div class="who-bar">${me.by?`Apuntando como <b>${esc(me.by)}</b> · `:''}<button class="linkbtn" id="logout">Cambiar</button></div>
+  <div class="tabs" role="tablist">
+    ${RIFAS.map((x,i)=>`<button class="tab" role="tab" aria-selected="${i===cur}" data-tab="${i}">${esc(x.nombre)}</button>`).join('')}
+    <span class="save-state ${lastErr?'err':''}">${lastErr?esc(lastErr):(syncing?'Guardando…':'Al día ✓')}</span>
+  </div>
+  <div class="layout">
+    <section class="card basket">
+      <h2>${esc(r.titulo)}</h2>
+      <div class="photo" style="border-style:solid;border-color:var(--line);cursor:default"><img src="${r.foto}" alt="Foto de la ${esc(r.titulo)}"></div>
+      <div class="stats">
+        <div class="stat"><b>${sold}</b><span>vendidos</span></div>
+        <div class="stat"><b>${100-sold}</b><span>libres</span></div>
+        <div class="stat"><b>${eur(paid*PRECIO)}</b><span>cobrado</span></div>
+      </div>
+      <div class="bar"><i style="width:${sold}%"></i></div>
+      <div class="price">${sold-paid>0?`${sold-paid} pendiente(s) de pago (${eur((sold-paid)*PRECIO)}) · `:''}Máximo: ${eur(100*PRECIO)}</div>
+    </section>
+    <section class="card">
+      <div class="grid-head"><h3>Elige un número</h3>
+        <div class="legend"><span><i style="background:#fff;border:2px solid var(--line)"></i>Libre</span><span><i style="background:var(--sold)"></i>Vendido</span><span><i style="background:var(--pending)"></i>Sin pagar</span></div>
+      </div>
+      <div class="grid">${cells}</div>
+      <div class="tools">
+        <input type="search" id="q" placeholder="Buscar por nombre o número…" value="${esc(query)}" style="flex:1;min-width:180px">
+        <button class="btn" id="copy">Copiar lista</button>
+        <button class="btn" id="random">Sortear 🎲</button>
+      </div>
+      <div class="list">${rows?`<table><thead><tr><th>Nº</th><th>Comprador</th><th>Pago</th></tr></thead><tbody>${rows}</tbody></table>`:`<p style="color:var(--muted);font-weight:600">${q?'Sin resultados.':'Todavía no hay números vendidos.'}</p>`}</div>
+    </section>
+  </div>`;
+
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{cur=+b.dataset.tab;query='';location.hash=RIFAS[cur].id;render();});
+  document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>openTicket(+b.dataset.n));
+  $('#logout').onclick=()=>{ me.pin=''; saveMe(); render(); };
+  const qi=$('#q'); qi.oninput=()=>{query=qi.value;render(true);};
+  if (hadFocus){ const n=$('#q'); n.focus(); n.setSelectionRange(pos,pos); }
+  $('#copy').onclick=copyList; $('#random').onclick=draw;
+}
+
+function header(){
+  return `<header><img class="logo" alt="AMPA El Girasol" src="logo.webp"><div><h1>Rifa AMPA El Girasol</h1><p><b>${eur(PRECIO)}</b> el número · 2 cestas · 100 números cada una</p></div></header>`;
+}
+
+function renderLogin(){
+  $('#app').innerHTML = header() + `<form class="card login" id="lg">
+    <h2>Entrar para apuntar</h2>
+    <p>Solo la primera vez en este móvil.</p>
+    <label for="by">Tu nombre</label><input type="text" id="by" value="${esc(me.by)}" placeholder="Ej.: Laura" autocomplete="name">
+    <label for="pin">PIN del AMPA</label><input type="text" id="pin" inputmode="text" autocomplete="off" placeholder="El que os ha pasado la junta">
+    <div class="err-msg" id="lerr"></div>
+    <button class="btn pri" type="submit">Entrar</button></form>`;
+  $('#lg').onsubmit = async e => {
+    e.preventDefault();
+    const pin=$('#pin').value.trim(), by=$('#by').value.trim();
+    if(!by){ $('#lerr').textContent='Pon tu nombre'; return; }
+    $('#lerr').textContent='Comprobando…';
+    try{
+      const d = await apiPost({action:'check', pin, by});
+      if(d.ok){ me.pin=pin; me.by=by; saveMe(); loaded=false; render(); refresh(); }
+      else $('#lerr').textContent = d.error==='pin' ? 'PIN incorrecto' : 'No se pudo comprobar';
+    }catch(err){ $('#lerr').textContent='Sin conexión'; }
+  };
+}
+
+function openTicket(n){
+  const r=RIFAS[cur], t=T[r.id][n], d=$('#dlg');
+  d.innerHTML=`<form class="dlg">
+    <div style="display:flex;align-items:center"><span class="bignum">${n}</span><div><h3>Número ${n}</h3><div style="color:var(--muted);font-weight:700">${esc(r.nombre)} · ${eur(PRECIO)}</div></div></div>
+    <label for="nm">Nombre de quien lo compra</label>
+    <input type="text" id="nm" value="${esc(t?.name||'')}" placeholder="Ej.: María García (5ºB)" autocomplete="off">
+    <label for="nt">Nota (teléfono, curso…) — opcional</label>
+    <input type="text" id="nt" value="${esc(t?.note||'')}" autocomplete="off">
+    <label class="check"><input type="checkbox" id="pd" ${t?.paid===false?'':'checked'}> Pagado</label>
+    ${t?.by?`<div style="color:var(--muted);font-size:13px;margin-top:8px">Lo apuntó: ${esc(t.by)}</div>`:''}
+    <div class="row">
+      ${t?'<button type="button" class="btn warn" id="free">Liberar</button>':''}
+      <span class="sp"></span>
+      <button type="button" class="btn" id="cancel">Cancelar</button>
+      <button type="submit" class="btn pri" id="ok">Guardar</button>
+    </div></form>`;
+  d.showModal();
+  setTimeout(()=>{const i=$('#nm'); i.focus(); i.select();},30);
+  $('#cancel').onclick=()=>d.close();
+  const prevName = t ? t.name : '';
+  if($('#free')) $('#free').onclick=()=>{ d.close(); send({action:'free', rifa:r.id, n, prevName}, `Número ${n} liberado`); };
+  d.querySelector('form').onsubmit=e=>{
+    e.preventDefault();
+    const name=$('#nm').value.trim();
+    if(!name){ $('#nm').focus(); toast('Escribe un nombre'); return; }
+    const body={action:'set', rifa:r.id, n, prevName, name, note:$('#nt').value.trim(), paid:$('#pd').checked};
+    T[r.id][n]={name, note:body.note, paid:body.paid, by:me.by};   // se ve al instante
+    d.close(); send(body, `Nº ${n} → ${name}`);
+  };
+}
+
+async function send(body, okMsg){
+  if (body.action==='free') delete T[body.rifa][body.n];
+  syncing=true; render(true);
+  try{
+    const d = await apiPost(body);
+    if (d.tickets) setTickets(d.tickets);
+    if (d.ok) { lastErr=''; toast(okMsg); }
+    else if (d.error==='taken') { toast('⚠️ Otra persona acaba de cambiar ese número. Revisa.'); }
+    else if (d.error==='pin') { me.pin=''; saveMe(); toast('PIN incorrecto o cambiado'); }
+    else { lastErr='No se guardó'; toast('No se pudo guardar, inténtalo otra vez'); await refreshNow(); }
+  }catch(e){ lastErr='Sin conexión: no se guardó'; toast('Sin conexión: no se guardó'); await refreshNow(); }
+  syncing=false; render(true);
+}
+async function refreshNow(){ try{ const d=await apiGet(); if(d.ok) setTickets(d.tickets); }catch(e){} }
+
+function copyList(){
+  const r=RIFAS[cur], tk=T[r.id];
+  const lines=Object.entries(tk).sort((a,b)=>a[0]-b[0]).map(([n,t])=>`${n} - ${t.name}${t.note?' ('+t.note+')':''}${t.paid===false?' [PENDIENTE]':''}`);
+  const txt=`${r.nombre} - AMPA El Girasol\nVendidos: ${lines.length}/100\n\n`+(lines.join('\n')||'(sin ventas)');
+  navigator.clipboard.writeText(txt).then(()=>toast('Lista copiada'),()=>toast('No se pudo copiar'));
+}
+
+function draw(){
+  const r=RIFAS[cur], tk=T[r.id], d=$('#dlg');
+  const n=1+Math.floor(Math.random()*100), t=tk[n];
+  d.innerHTML=`<div class="dlg" style="text-align:center">
+    <h3>Sorteo · ${esc(r.nombre)}</h3>
+    <div class="bignum" style="width:96px;height:96px;font-size:44px;margin:14px auto">${n}</div>
+    <p style="font-weight:700;font-size:18px">${t?`🎉 ¡Le toca a <b>${esc(t.name)}</b>!`:'Este número no se vendió.'}</p>
+    <p style="color:var(--muted);font-size:13px">Número al azar entre 1 y 100. Solo orientativo: no se guarda.</p>
+    <div class="row"><span class="sp"></span><button class="btn" id="again">Otra vez</button><button class="btn pri" id="cancel">Cerrar</button></div></div>`;
+  if(!d.open) d.showModal();
+  $('#cancel').onclick=()=>d.close(); $('#again').onclick=draw;
+}
+
+const h = location.hash.slice(1); const hi = RIFAS.findIndex(r=>r.id===h); if (hi>=0) cur=hi;
+render();
+refresh();
+setInterval(()=>refresh(true), 15000);                 // se actualiza solo cada 15 s
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) refresh(true); });
+})();
+</script>
+</body>
+</html>
